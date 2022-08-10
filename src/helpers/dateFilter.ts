@@ -35,5 +35,5 @@ export const formatCurrentMonth = (currentMonth: string): string => {
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
-    return `${monthNames[parseInt(month)-1]} - ${year}`;
+    return `${monthNames[parseInt(month)-1]} ${year}`;
 };
