@@ -1,10 +1,11 @@
 import * as C from './App.styles';
-import { Category } from './types/category';
-import { Item } from './types/item';
 import { categories } from './data/categories';
 import { items } from './data/items';
 import { useEffect, useState } from 'react';
-import { getCurrentMonth } from './helpers/dateFilter';
+import { filterListByMonth, getCurrentMonth } from './helpers/dateFilter';
+import { TableArea } from './components/TableArea';
+import { Item } from "./types/Item";
+import { Category } from './types/Category';
 
 
 
@@ -15,7 +16,7 @@ const App = () => {
 
   useEffect(
     () => {
-
+      setFilteredList( filterListByMonth(list, currentMonth) );
     }, [list, currentMonth]
   );
   
@@ -30,7 +31,7 @@ const App = () => {
 
           {/* adding data */}
 
-          {/* itens table */}
+          <TableArea list={filteredList}/>
       </C.Body>
     </C.Container>
   );
