@@ -6,6 +6,7 @@ import { filterListByMonth, getCurrentMonth } from './helpers/dateFilter';
 import { TableArea } from './components/TableArea';
 import { Item } from "./types/Item";
 import { Category } from './types/Category';
+import { InfoArea } from './components/InfoArea';
 
 
 
@@ -27,7 +28,7 @@ const App = () => {
         <C.HeaderText>Expense Tracker</C.HeaderText>
       </C.Header>
       <C.Body>
-          {/* information */}
+          <InfoArea currentMonth={currentMonth}/>
 
           {/* adding data */}
 
