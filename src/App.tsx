@@ -27,13 +27,22 @@ const App = () => {
     setCurrentMonth(newMonth);
   };
 
-  const calculateTotalValue = () => {
-    let totalValue = 0;
-    filteredList.map((item) => {
-        totalValue += item.value;
-    })
-    console.log(totalValue);
-  }
+  useEffect(
+    () => {
+      let totalExpense = 0;
+      let totalIncome = 0;
+      filteredList.map((item) => {
+        if (categories[item.category].expense){
+          totalExpense += item.value;
+        } else {
+          totalIncome += item.value;
+        }
+          
+      })
+      setExpense(totalExpense)
+      setIncome(totalIncome)
+    }, [filteredList]
+  );
   
 
   return (
