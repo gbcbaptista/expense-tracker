@@ -7,6 +7,7 @@ import { TableArea } from './components/TableArea';
 import { Item } from "./types/Item";
 import { Category } from './types/Category';
 import { InfoArea } from './components/InfoArea';
+import { InputArea } from './components/InputArea';
 
 
 
@@ -43,6 +44,12 @@ const App = () => {
       setIncome(totalIncome)
     }, [filteredList]
   );
+
+  const handleAddItem = (item: Item) => {
+    let newList = [...list];
+    newList.push(item)
+    setList(newList);
+  }
   
 
   return (
@@ -58,7 +65,7 @@ const App = () => {
             expense={expense}
           />
 
-          {/* adding data */}
+          <InputArea onAdd={handleAddItem}/>
 
           <TableArea list={filteredList}/>
       </C.Body>
