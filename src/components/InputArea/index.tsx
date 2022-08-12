@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import { categories } from '../../data/categories';
 import { formatDate } from '../../helpers/dateFilter';
 import { Category } from '../../types/Category';
@@ -12,13 +13,24 @@ type Props = {
 
 
 export const InputArea = ({onAdd}: Props) => {
+    const [itemDate, setItemDate] = useState('');
+    const [itemCategory, setItemCategory] = useState('');
+    const [itemTitle, setItemTitle] = useState('');
+    const [itemValue, setItemValue] = useState('');
+
 
     const handleAddEvent = () => {
+        let [year, month, day] = itemDate.split("-")
+        console.log(itemDate);
+        console.log(year)
+        console.log(month)
+        console.log(day)
+        console.log(new Date(parseInt(year), parseInt(month)-1, parseInt(day)),)
         let newItem: Item = { 
-            date: new Date(2022, 10, 15), 
-            category: 'food', 
-            title: 'BBQ', 
-            value: 45.60 
+            date: new Date(parseInt(year), parseInt(month)-1, parseInt(day)),
+            category: itemCategory, 
+            title: itemTitle, 
+            value: parseInt(itemValue)
         };
         onAdd(newItem)
     }
@@ -29,42 +41,38 @@ export const InputArea = ({onAdd}: Props) => {
                 <div>
                     <label>Date</label>
                     <input
-                        id="itemDate"
-                        name="itemDate"
                         type="date"
+                        value={itemDate}
+                        onChange={e => setItemDate(e.target.value)} 
                     />
                 </div>
                 <div>
                     <label>Category</label>
                     <input
-                        id="itemDate"
-                        name="itemDate"
                         type="text"
+                        value={itemCategory}
+                        onChange={e => setItemCategory(e.target.value)} 
                     />
                 </div>
                 <div>
                     <label>Title</label>
                     <input
-                        id="itemDate"
-                        name="itemDate"
                         type="text"
+                        value={itemTitle}
+                        onChange={e => setItemTitle(e.target.value)} 
                     />
                 </div>
                 <div>
                     <label>Value</label>
                     <input
-                        id="itemDate"
-                        name="itemDate"
                         type="number"
+                        value={itemValue}
+                        onChange={e => setItemValue(e.target.value)} 
                     />
                 </div>
             </div>
             <button onClick={handleAddEvent}>Add Item</button>
-            
-            
 
-            
-            
         </C.Container>
     );
 }

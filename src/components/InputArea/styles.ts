@@ -7,7 +7,7 @@ export const Container = styled.div`
     background-color: #FFF;
     box-shadow: 0px 0px 5px #CCC;
     border-radius: 10px;
-    padding:20px;
+    padding: 20px;
     margin-top: 20px;
 
     div {
@@ -30,6 +30,11 @@ export const Container = styled.div`
     }
 
     button {
-        
+        grid-column: 4;
+        padding: 14px;
+        margin-top: 5px;
+        background-color: lightblue;
+        border: 2px solid #CCC;
+        border-radius: 7px;
     }
 `;
