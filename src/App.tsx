@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { filterListByMonth, getCurrentMonth } from './helpers/dateFilter';
 import { TableArea } from './components/TableArea';
 import { Item } from "./types/Item";
-import { Category } from './types/Category';
 import { InfoArea } from './components/InfoArea';
 import { InputArea } from './components/InputArea';
 
@@ -32,14 +31,15 @@ const App = () => {
     () => {
       let totalExpense = 0;
       let totalIncome = 0;
-      filteredList.map((item) => {
+      console.log(filteredList)
+      filteredList.forEach((item) => {
         if (categories[item.category].expense){
           totalExpense += item.value;
         } else {
           totalIncome += item.value;
         }
-          
       })
+      console.log(filteredList)
       setExpense(totalExpense)
       setIncome(totalIncome)
     }, [filteredList]
