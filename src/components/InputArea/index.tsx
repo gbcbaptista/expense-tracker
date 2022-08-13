@@ -43,6 +43,10 @@ export const InputArea = ({onAdd}: Props) => {
             value: itemValue
         };
         onAdd(newItem)
+        setItemDate('')
+        setItemCategory('iFood')
+        setItemTitle('')
+        setItemValue(0)
     }
 
     return (
