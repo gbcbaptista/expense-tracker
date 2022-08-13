@@ -18,7 +18,8 @@ export const Container = styled.div`
     }
 
     label {
-        margin: 5px;
+        margin-bottom: 3px;
+        padding: 0;
     }
 
     input, select {
@@ -26,15 +27,28 @@ export const Container = styled.div`
         padding: 10px;
         border: 1px solid #CCC;
         border-radius: 5px;
-        margin-right: 10px;
+        margin: 0px 5px 0px 5px;
     }
 
     button {
-        grid-column: 4;
-        padding: 14px;
-        margin-top: 5px;
-        background-color: lightblue;
-        border: 2px solid #CCC;
-        border-radius: 7px;
+        padding: auto;
+        margin: auto;
+        width: 100px;
+        height: 50px;
+        line-height: 50px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #FFF;
+        background-color: #009933;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+
+        &:hover {
+            text-color: #FFF;
+            background-color: darkgreen;
+        }
     }
+
+    
 `;

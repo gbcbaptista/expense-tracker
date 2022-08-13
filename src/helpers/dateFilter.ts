@@ -22,7 +22,7 @@ export const filterListByMonth = (list: Item[], date: string): Item[] => {
 export const formatDate = (date: Date): string => {
     let year = date.getFullYear();
     let month = date.getMonth()+1;
-    let day = date.getDay();
+    let day = date.getDate();
 
     return `${addZeroToDate(month)}/${addZeroToDate(day)}/${year}`
 }

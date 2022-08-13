@@ -1,8 +1,5 @@
 
-import { useState } from 'react';
-import { categories } from '../../data/categories';
-import { formatDate } from '../../helpers/dateFilter';
-import { Category } from '../../types/Category';
+import { useEffect, useState } from 'react';
 import { Item } from '../../types/Item';
 import * as C from './styles';
 
@@ -11,28 +8,44 @@ type Props = {
 }
 
 
-
 export const InputArea = ({onAdd}: Props) => {
     const [itemDate, setItemDate] = useState('');
-    const [itemCategory, setItemCategory] = useState('');
+    const [itemCategory, setItemCategory] = useState("iFood");
     const [itemTitle, setItemTitle] = useState('');
-    const [itemValue, setItemValue] = useState('');
+    const [itemValue, setItemValue] = useState(0);
+    const [addItemActive, setAddItemActive] = useState(false);
+
+    useEffect(
+        () => {
+            if (
+                itemDate !== '' &&
+                itemDate !== undefined &&
+                itemCategory !== '' &&
+                itemCategory !== undefined &&
+                itemTitle !== '' &&
+                itemTitle !== undefined &&
+                itemValue > 0
+                ) {
+                setAddItemActive(true)
+            } else {
+                setAddItemActive(false)
+            }
+        }, [itemDate, itemCategory, itemTitle, itemValue]
+    );
 
 
     const handleAddEvent = () => {
+        console.log("try add item")
         let [year, month, day] = itemDate.split("-")
-        console.log(itemDate);
-        console.log(year)
-        console.log(month)
-        console.log(day)
-        console.log(new Date(parseInt(year), parseInt(month)-1, parseInt(day)),)
         let newItem: Item = { 
             date: new Date(parseInt(year), parseInt(month)-1, parseInt(day)),
-            category: itemCategory, 
+            category: itemCategory.toLowerCase(), 
             title: itemTitle, 
-            value: parseInt(itemValue)
+            value: itemValue
         };
         onAdd(newItem)
+        console.log(itemValue)
+        console.log("item adde")
     }
 
     return (
@@ -48,11 +61,14 @@ export const InputArea = ({onAdd}: Props) => {
                 </div>
                 <div>
                     <label>Category</label>
-                    <input
-                        type="text"
+                    <select
                         value={itemCategory}
                         onChange={e => setItemCategory(e.target.value)} 
-                    />
+                    >
+                        <option>iFood</option>
+                        <option>Uber</option>
+                        <option>Salary</option>
+                    </select>
                 </div>
                 <div>
                     <label>Title</label>
@@ -67,12 +83,20 @@ export const InputArea = ({onAdd}: Props) => {
                     <input
                         type="number"
                         value={itemValue}
-                        onChange={e => setItemValue(e.target.value)} 
+                        onChange={e => setItemValue(parseFloat(e.target.value))} 
                     />
                 </div>
+                <div />
+                <div>
+                    <button
+                        disabled={!addItemActive}
+                        onClick={handleAddEvent}
+                    >
+                    Add Item
+                    </button>
+                </div>
             </div>
-            <button onClick={handleAddEvent}>Add Item</button>
-
+            
         </C.Container>
     );
 }
