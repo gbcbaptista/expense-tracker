@@ -35,7 +35,6 @@ export const InputArea = ({onAdd}: Props) => {
 
 
     const handleAddEvent = () => {
-        console.log("try add item")
         let [year, month, day] = itemDate.split("-")
         let newItem: Item = { 
             date: new Date(parseInt(year), parseInt(month)-1, parseInt(day)),
@@ -44,8 +43,6 @@ export const InputArea = ({onAdd}: Props) => {
             value: itemValue
         };
         onAdd(newItem)
-        console.log(itemValue)
-        console.log("item adde")
     }
 
     return (
