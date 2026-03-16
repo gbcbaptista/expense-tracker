@@ -189,7 +189,8 @@ This is what the user sees when they open the app:
 - What-if: "Se eu cortar streaming, quanto economizo por ano?"
 
 ### 6.4 AI Implementation Strategy
-- **Phase 1**: Rule-based alerts + Claude API for categorization and advice
+- **Architecture**: Provider-agnostic abstraction layer. Start with Claude API, swap providers without touching business logic.
+- **Phase 1**: Rule-based alerts + AI (via abstraction) for categorization and advice
 - **Phase 2**: Fine-tuned model based on user correction patterns
 - **Phase 3**: Conversational interface (chat with your finances)
 - **Important**: AI uses ONLY user's own data. No benchmarks against other users. Privacy first.
@@ -227,8 +228,7 @@ This is what the user sees when they open the app:
 
 ### 8.3 Integration Sources
 - Pluggy connectors for brokerages (XP, BTG, Clear, Rico, Genial, B3/CEI)
-- Manual entry for crypto and unsupported assets
-- Crypto exchange APIs as P2 (Binance, Mercado Bitcoin)
+- Manual entry for unsupported assets
 
 ---
 
@@ -257,8 +257,7 @@ This is what the user sees when they open the app:
 ### 10.1 Delivery Channels
 - In-app notifications (always)
 - Push notifications via PWA (daily alerts)
-- Email digest (weekly/monthly summary)
-- WhatsApp integration (P3 — would be amazing for Brazilian users)
+- Email digest (P3 — if needed later)
 
 ### 10.2 Notification Types
 - Critical: overspending, low balance, bill due, connection broken

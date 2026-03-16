@@ -153,12 +153,6 @@
 - **Risk**: No permanent free tier (must pay after 14-day trial)
 - **Mitigation**: Build with a clean abstraction layer so we can swap aggregators later if needed
 
-### For Crypto
-Separate integrations needed:
-- Mercado Bitcoin API
-- Binance API
-- Manual entry as fallback
-
 ### Integration Architecture
 
 ```
@@ -198,10 +192,21 @@ Rules (ordered by priority):
 4. Default: "Outros"
 ```
 
-### Phase 2: ML-Assisted (P2)
-- Train on user corrections
-- Use description + amount + merchant + time patterns
-- Could use a lightweight model or even Claude API for classification
+### Phase 2: AI-Assisted (P0 — core feature)
+- **Provider-agnostic abstraction layer**: All AI calls go through an `AIProvider` interface
+- Start with **Claude API** as the first implementation
+- Can swap to OpenAI, Gemini, local models, or any other provider without changing business logic
+- Use for: transaction categorization, financial advice, plan suggestions, anomaly detection
+- Train on user corrections to improve accuracy over time
+
+```typescript
+// Conceptual abstraction — details during implementation
+interface AIProvider {
+  categorizeTransaction(description: string, amount: number, context: TransactionContext): Promise<Category>
+  generateFinancialAdvice(userData: UserFinancialSnapshot): Promise<Advice[]>
+  suggestPlanAdjustments(plan: FinancialPlan, recentData: SpendingData): Promise<Suggestion[]>
+}
+```
 
 ---
 
@@ -248,10 +253,17 @@ Rules (ordered by priority):
 
 ---
 
-## Open Decisions
+## Decided
+
+- [x] **AI Provider** → Claude API behind a provider-agnostic abstraction layer. Swap providers without touching business logic.
+- [x] **Bank aggregator** → Pluggy (best coverage, self-serve, installment data).
+- [x] **Mobile strategy** → PWA. 50/50 mobile/desktop. No native app.
+- [x] **Notifications** → Push notifications (PWA) only.
+- [x] **Crypto** → Out of scope.
+
+## Open Decisions (evaluate during implementation)
 
 - [ ] **Monorepo vs. separate repos?** — Turborepo monorepo recommended for shared types and faster dev.
 - [ ] **Drizzle vs. Prisma?** — Both are solid. Drizzle is lighter and closer to SQL; Prisma has better tooling.
-- [ ] **Which bank aggregator?** — Pending research. This is the most critical external dependency.
 - [ ] **Real-time updates?** — WebSocket for live balance updates, or just poll on page load?
-- [ ] **Mobile strategy?** — PWA first, then React Native if native features are needed.
+- [ ] **Hosting** — Vercel + Supabase vs. Railway vs. VPS. Evaluate when deploying.

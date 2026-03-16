@@ -119,8 +119,8 @@ The app doesn't just record — it watches, learns, and advises:
 - [x] How to handle banks that aren't available via Open Finance yet? → CSV/OFX import as fallback.
 - [x] Investment data: direct API integration with brokerages or via B3/CEI? → Pluggy has direct connectors for XP, BTG, Clear, Rico, Genial, and B3/CEI.
 - [x] What level of AI/ML for categorization vs. simple rule-based matching? → **AI is core**: auto-categorization + financial advice + plan suggestions. Start with rules + Claude API, evolve to fine-tuned models.
-- [ ] Crypto tracking: separate exchange APIs (Binance, Mercado Bitcoin) or manual only?
-- [ ] Which specific AI model/approach for the financial copilot? (Claude API, local model, hybrid?)
-- [ ] Notification delivery: push notifications (PWA), email, WhatsApp, or all?
+- [x] Crypto tracking → **Out of scope**. Not needed.
+- [x] AI model choice → **Claude API** to start, but behind a **provider-agnostic abstraction layer**. Can swap to other providers later without changing business logic.
+- [x] Notification delivery → **Push notifications (PWA)** only. No email, no WhatsApp.
 - [x] User's bank/institution list → See Target User section. Daily: Itaú + Nubank + Inter. Debt-only: XP, BB, Bradesco, others.
-- [ ] Exact list and amounts of active debts (some overdue, some being paid) — needed to validate debt tracker features.
+- [ ] Tech stack final decisions → Evaluate during implementation. ARCHITECTURE.md has proposals, not commitments.

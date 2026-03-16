@@ -169,7 +169,7 @@ The app actively watches your finances and tells you when something needs attent
 - [ ] Asset allocation breakdown (Renda Fixa, Ações, FIIs, etc.)
 - [ ] Total portfolio value + basic gain/loss
 - [ ] Dividends/yield tracking
-- [ ] Manual entry for unsupported assets (crypto, etc.)
+- [ ] Manual entry for unsupported assets
 
 ### 5B: Pix Deep-Dive
 - [ ] Pix-specific transaction view
@@ -215,7 +215,6 @@ Complete financial picture: spending + debts + investments + net worth. App is p
 - [ ] Shared household finances
 - [ ] WhatsApp bot for alerts
 - [ ] Conversational AI: "Quanto gastei com Uber?"
-- [ ] Crypto exchange integration (Binance, Mercado Bitcoin)
 - [ ] Tax preparation helpers
 
 ### Deliverable
