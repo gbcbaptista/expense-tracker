@@ -1,6 +1,7 @@
 # Financial Tracker - Roadmap
 
-> Phased approach: build something usable fast, then iterate.
+> Phased approach. Each phase delivers real value on its own.
+> The KEY insight: **tracking is the foundation, but the plan and the copilot are the product.**
 
 ---
 
@@ -17,183 +18,240 @@
 - [ ] Set up authentication (Auth.js)
 - [ ] Set up basic CI/CD (lint, type-check, build)
 - [ ] Configure environment variables and secrets management
-- [ ] Create basic layout: sidebar navigation, header, responsive shell
+- [ ] Create basic layout: sidebar navigation, header, responsive PWA shell
+- [ ] PWA setup: manifest, service worker, installable on mobile
 
 ### Deliverable
-A running app with login, an empty dashboard, and a working database.
+A running app with login, an empty dashboard, working database, and installable as PWA on mobile.
 
 ---
 
-## Phase 1: Manual Foundation (MVP)
+## Phase 1: Connect Everything
 
-**Goal**: A usable financial tracker even without bank connections. Prove the core value proposition.
+**Goal**: Connect all bank accounts and see everything in one place. This is the "aha moment."
 
-### 1A: Accounts & Transactions (Manual)
-- [ ] CRUD for manual accounts (checking, savings, credit card, investment)
-- [ ] Manual transaction entry (date, description, amount, category)
-- [ ] Default category tree (seeded with Brazilian categories)
-- [ ] Transaction list with filters (date, category, account, type)
-- [ ] Search transactions by description
-- [ ] Dashboard: total balance, recent transactions, spending summary
+### 1A: Pluggy Integration
+- [ ] Integrate Pluggy API (SDK setup, API keys, environment config)
+- [ ] Bank connection flow (Pluggy Connect widget embedded in app)
+- [ ] Account discovery after connection (list checking, savings, credit cards, investment accounts)
+- [ ] Initial historical transaction sync
+- [ ] Connection status monitoring and re-auth flow
 
-### 1B: Credit Card Basics
-- [ ] Credit card account type with limit, closing date, due date
-- [ ] Manual installment plan creation
-- [ ] Invoice view: current month's transactions for a card
-- [ ] Future invoice projection based on installment plans
+### 1B: Consolidated Dashboard (v1)
+- [ ] List all connected accounts with current balances
+- [ ] Total consolidated balance across all accounts
+- [ ] Unified transaction feed (all accounts, sorted by date)
+- [ ] Basic search and filters (date range, account, amount)
 
-### 1C: CSV Import
+### 1C: AI Categorization Engine
+- [ ] Default Brazilian category tree (seeded in database)
+- [ ] Rule-based categorization (keyword matching on descriptions)
+- [ ] AI categorization via Claude API for unmatched transactions
+- [ ] User correction flow: recategorize → auto-create rule for future matches
+- [ ] Bulk categorization: "Apply to all similar"
+- [ ] Auto-detect Pix transactions and extract recipient info
+- [ ] Auto-detect installments from descriptions ("PARCELA 3/12")
+
+### 1D: CSV Import (Fallback)
 - [ ] Upload CSV/OFX file
 - [ ] Column mapping UI
 - [ ] Preview before import
 - [ ] Duplicate detection
-- [ ] Auto-categorization on import (rule-based)
+- [ ] Auto-categorization applied on import
 
 ### Deliverable
-A fully functional manual financial tracker with CSV import. Users can see where their money goes, track credit card installments, and import bank statements.
+All bank accounts connected, transactions syncing automatically, AI categorizing everything. User opens the app and sees **where every centavo is going** — without any manual entry.
 
 ---
 
-## Phase 2: Bank Integration
+## Phase 2: Credit Cards & Debt
 
-**Goal**: Connect to Brazilian banks and automate everything.
+**Goal**: Full visibility into credit card installments and active debts. Know exactly what you owe and when.
 
-### 2A: Aggregator Integration
-- [ ] Choose and integrate bank aggregator (Pluggy, Belvo, or Open Finance)
-- [ ] Bank connection flow (OAuth consent in iframe/redirect)
-- [ ] Account discovery (list accounts after connecting)
-- [ ] Initial transaction sync (historical data)
+### 2A: Credit Card Intelligence
+- [ ] Credit card dashboard: current invoice, limit, closing date, due date
+- [ ] Installment plan tracking (auto-detected + manual creation)
+- [ ] Future invoice projection: "Next 6 months of invoices with installment commitments"
+- [ ] Cash flow impact visualization: how installments affect future available income
+- [ ] Invoice breakdown by category
+- [ ] Invoice month-over-month comparison
+- [ ] Alert: installment commitments approaching dangerous % of income
 
-### 2B: Ongoing Sync
-- [ ] Webhook handler for real-time transaction updates
-- [ ] Scheduled sync as fallback (every 6-12 hours)
-- [ ] Connection health monitoring and alerts
-- [ ] Re-authentication flow for expired connections
-- [ ] Balance sync and reconciliation
+### 2B: Debt Tracker
+- [ ] Add debts manually (all types: financing, loans, overdraft, informal, etc.)
+- [ ] Debt dashboard: total debt, breakdown by type, monthly payment burden
+- [ ] Payoff timeline visualization per debt
+- [ ] Interest cost calculation: "You'll pay R$ X total in interest"
+- [ ] Auto-detect and link recurring debt payments from transactions
 
-### 2C: Smart Categorization
-- [ ] Categorization rule engine (keyword matching)
-- [ ] Learn from user corrections
-- [ ] Merchant name normalization
-- [ ] Bulk re-categorize similar transactions
-- [ ] Auto-detect installments from bank descriptions ("PARCELA 3/12")
-- [ ] Auto-detect Pix transactions and extract recipient info
+### 2C: Debt Strategy (AI-Powered)
+- [ ] Avalanche vs. Snowball recommendation with clear explanation
+- [ ] "What if" simulation: extra payments → new payoff date + interest saved
+- [ ] Net worth calculation: assets - debts
+- [ ] Net worth evolution graph
 
 ### Deliverable
-Connect your bank accounts and see all transactions automatically categorized. Credit card installments detected and projected.
+User sees all debts + credit card commitments clearly. AI recommends which debt to tackle first. Simulations show the impact of extra payments. Future invoice projections prevent surprises.
 
 ---
 
-## Phase 3: Insights & Control
+## Phase 3: The Plan
 
-**Goal**: Turn data into actionable insights.
+**Goal**: Build a personalized financial plan based on real data, and monitor it daily.
 
-### 3A: Budgets
-- [ ] Set monthly budgets per category
-- [ ] Budget progress bars on dashboard
-- [ ] Alerts when approaching/exceeding budget
-- [ ] Budget vs. actual reports
+> This phase comes AFTER the app has 1+ months of real spending data. The plan is data-driven, not guesswork.
 
-### 3B: Reports
-- [ ] Monthly spending by category (bar + pie charts)
+### 3A: Plan Builder
+- [ ] AI analyzes spending history and suggests budget per category
+- [ ] Show user their actual spending patterns vs. suggested budget
+- [ ] User adjusts budget amounts to their comfort level
+- [ ] Define financial goals (quitar dívida, reserva emergência, viagem, etc.)
+- [ ] Link goals to accounts (optional)
+- [ ] Set income expectations
+
+### 3B: Plan Status Dashboard (THE Main Screen)
+- [ ] **Plan health score**: "82% on track this month"
+- [ ] Category budget progress bars (green/yellow/red)
+- [ ] Active alerts and warnings
+- [ ] Consolidated balances (quick glance)
+- [ ] Recent transactions
+- [ ] Goal progress
+- [ ] Debt payoff progress
+
+### 3C: Reports
+- [ ] Monthly spending by category (charts)
 - [ ] Month-over-month comparison
 - [ ] Income vs. expenses trend
 - [ ] Cash flow analysis
-- [ ] Credit card invoice breakdown by category
+- [ ] Credit card invoice trends
+- [ ] Debt payoff progress over time
 
-### 3C: Pix Analytics
+### Deliverable
+User opens the app and immediately sees: "Am I on track?" Budget progress, alerts, goals — all in one screen. The app is now a true financial copilot, not just a tracker.
+
+---
+
+## Phase 4: The Copilot
+
+**Goal**: AI becomes proactive — alerts, suggestions, and plan adjustments without the user asking.
+
+### 4A: Proactive Alerts
+- [ ] Overspending alerts: "80% of food budget used, it's only the 15th"
+- [ ] Bill reminders: "Fatura vence em 3 dias"
+- [ ] Anomaly detection: "Gasto 3x acima da média com iFood"
+- [ ] Low balance warnings
+- [ ] Duplicate subscription detection
+- [ ] Connection health alerts
+
+### 4B: Plan Adjustment Suggestions
+- [ ] "You've had R$ 800 surplus for 3 months — allocate to goal/debt?"
+- [ ] "Spending on X category dropped — reduce budget?"
+- [ ] "Debt X paid off — redirect payment to Debt Y?"
+- [ ] "Income change detected — update plan?"
+
+### 4C: Notification System
+- [ ] In-app notification center
+- [ ] Push notifications (PWA)
+- [ ] Email digest (weekly summary, monthly report)
+- [ ] User preferences: which alerts, which channels, quiet hours
+
+### Deliverable
+The app actively watches your finances and tells you when something needs attention. You don't have to remember to check — it comes to you.
+
+---
+
+## Phase 5: Investments & Polish
+
+**Goal**: Complete the financial picture with investment tracking. Polish everything for daily use.
+
+### 5A: Investment Tracking
+- [ ] Portfolio overview from Pluggy broker connectors
+- [ ] Asset allocation breakdown (Renda Fixa, Ações, FIIs, etc.)
+- [ ] Total portfolio value + basic gain/loss
+- [ ] Dividends/yield tracking
+- [ ] Manual entry for unsupported assets (crypto, etc.)
+
+### 5B: Pix Deep-Dive
 - [ ] Pix-specific transaction view
-- [ ] Top recipients / payers
+- [ ] Top recipients / payers ranking
 - [ ] Recurring Pix detection
 - [ ] Pix volume over time
 
-### 3D: Smart Insights
-- [ ] Anomaly detection ("You spent 3x more on X this week")
-- [ ] Spending trends ("Food spending up 15% over 3 months")
-- [ ] End-of-month forecast
+### 5C: Quality of Life
+- [ ] Performance optimization (dashboard < 2s load)
+- [ ] Offline support (PWA cache for dashboard)
+- [ ] Account grouping and customization
+- [ ] Dark mode
+- [ ] Data export (CSV, PDF reports)
 
 ### Deliverable
-Budgets, reports, and insights that help users make better financial decisions.
+Complete financial picture: spending + debts + investments + net worth. App is polished and pleasant to use daily.
 
 ---
 
-## Phase 4: Investments & Debt
+## Phase 6: SaaS
 
-**Goal**: Complete financial picture — not just spending, but net worth.
+**Goal**: Make it ready for other users to pay for.
 
-### 4A: Debt Tracker
-- [ ] Add debts manually (financing, loans, informal)
-- [ ] Debt dashboard with payoff timeline
-- [ ] Interest cost calculation
-- [ ] "What if" simulation (extra payments)
-- [ ] Net worth calculation (assets - debts)
-- [ ] Auto-link debt payments from transactions (P2)
+### 6A: Production Hardening
+- [ ] Security audit
+- [ ] LGPD compliance (consent flows, data export, data deletion)
+- [ ] Error tracking (Sentry)
+- [ ] Monitoring and alerting (uptime, sync health)
+- [ ] Rate limiting and abuse prevention
 
-### 4B: Investment Tracking
-- [ ] Portfolio overview from aggregator data
-- [ ] Asset allocation breakdown
-- [ ] Performance tracking (vs. CDI, Ibovespa)
-- [ ] Dividend/yield tracking
-- [ ] Manual entry for unsupported assets
-
-### 4C: Financial Goals
-- [ ] Create savings goals with target amount and date
-- [ ] Link to a savings account
-- [ ] Progress tracking with projections
-
-### Deliverable
-Full financial picture: spending, debt, investments, net worth, and goals in one place.
-
----
-
-## Phase 5: Polish & SaaS Prep
-
-**Goal**: Make it ready for other users.
-
-### 5A: Notifications
-- [ ] In-app notifications
-- [ ] Email digest (weekly/monthly summary)
-- [ ] Push notifications (PWA)
-- [ ] Configurable alert thresholds
-
-### 5B: Multi-user
-- [ ] User registration and onboarding flow
+### 6B: User Onboarding
+- [ ] Registration flow
+- [ ] Guided onboarding: connect first bank → see data → create plan
 - [ ] Subscription tiers (Free / Pro / Premium)
 - [ ] Payment integration (Stripe)
-- [ ] Usage limits per tier
-- [ ] Shared household finances (P3)
 
-### 5C: Production Hardening
-- [ ] Security audit
-- [ ] LGPD compliance (consent, data export, deletion)
-- [ ] Performance optimization
-- [ ] Error tracking (Sentry)
-- [ ] Monitoring and alerting
-- [ ] Landing page and marketing site
+### 6C: Marketing
+- [ ] Landing page
+- [ ] Feature comparison vs. competitors
+- [ ] Blog / content marketing
+
+### 6D: Future Ideas (P3)
+- [ ] Shared household finances
+- [ ] WhatsApp bot for alerts
+- [ ] Conversational AI: "Quanto gastei com Uber?"
+- [ ] Crypto exchange integration (Binance, Mercado Bitcoin)
+- [ ] Tax preparation helpers
 
 ### Deliverable
-A production-ready SaaS product with subscription billing.
+A production-ready SaaS product with subscription billing, onboarding, and marketing.
 
 ---
 
-## Timeline Estimate (Rough)
+## Phase Dependencies
 
-| Phase | Scope | Notes |
-|-------|-------|-------|
-| Phase 0 | Foundation | Project setup, infra |
-| Phase 1 | Manual MVP | Usable without bank APIs |
-| Phase 2 | Bank Integration | The core differentiator |
-| Phase 3 | Insights | Where the real value lives |
-| Phase 4 | Investments & Debt | Complete financial picture |
-| Phase 5 | SaaS | Monetization ready |
-
-> Each phase should be usable on its own. Don't wait for Phase 5 to start using it — start from Phase 1.
+```
+Phase 0 (Foundation)
+    │
+    ▼
+Phase 1 (Connect + Categorize)  ← "aha moment": see everything
+    │
+    ▼
+Phase 2 (Cards + Debt)          ← know what you owe
+    │
+    ▼
+Phase 3 (The Plan)              ← needs 1+ month of data from Phase 1
+    │
+    ▼
+Phase 4 (The Copilot)           ← needs the plan from Phase 3
+    │
+    ├──▶ Phase 5 (Investments + Polish)  ← can be parallel with Phase 4
+    │
+    ▼
+Phase 6 (SaaS)                  ← after personal use validates the product
+```
 
 ---
 
 ## What We're NOT Building (Scope Boundaries)
 
 - **Not a bank**: No money transfers, no payments, no PIX initiation
-- **Not a tax calculator**: No IR declaration automation (maybe in the future)
-- **Not a financial advisor**: Insights and data, not investment recommendations
-- **Not real-time trading**: Portfolio tracking, not a trading platform
+- **Not a tax calculator**: No IR declaration automation (maybe P3+)
+- **Not a financial advisor**: AI gives data-driven suggestions, not regulated investment advice
+- **Not a trading platform**: Portfolio tracking, not trading
+- **Not a social app**: No "compare with friends" or leaderboards (privacy first)
