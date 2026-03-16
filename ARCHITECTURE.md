@@ -1,6 +1,6 @@
 # Financial Tracker - Architecture
 
-> **Status**: Draft — Tech stack decisions are proposals, not final. Each section includes trade-offs to discuss.
+> **Status**: Draft — Some decisions are final (see "Decided" section at bottom). Tech stack choices are still proposals to evaluate during implementation.
 
 ---
 
@@ -8,44 +8,44 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Frontend                              │
-│              (Web App — PWA for mobile)                       │
+│                     Frontend (PWA)                            │
+│              Next.js — mobile + desktop                       │
 │                                                              │
-│   Dashboard │ Transactions │ Cards │ Investments │ Debts     │
+│   Plan Status │ Transactions │ Cards │ Debts │ Investments   │
 └──────────────────────┬───────────────────────────────────────┘
-                       │ HTTPS / REST + WebSocket
+                       │ HTTPS / REST
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      API Gateway                             │
+│                      API Layer                               │
 │                (Auth, Rate Limiting, CORS)                    │
 └──────────────────────┬───────────────────────────────────────┘
                        │
-          ┌────────────┼────────────┐
-          ▼            ▼            ▼
+          ┌────────────┼─────────────┐
+          ▼            ▼             ▼
    ┌────────────┐ ┌──────────┐ ┌──────────────┐
-   │  Core API  │ │  Sync    │ │  Categorizer │
-   │  Service   │ │  Worker  │ │  Service     │
-   │            │ │          │ │              │
-   │ Users      │ │ Bank API │ │ Rules engine │
-   │ Accounts   │ │ polling  │ │ ML model     │
-   │ Txns       │ │ Webhooks │ │ (future)     │
-   │ Budgets    │ │          │ │              │
+   │  Core API  │ │  Sync    │ │ AI Service   │
+   │            │ │  Worker  │ │              │
+   │ Plans      │ │          │ │ AIProvider   │
+   │ Accounts   │ │ Pluggy   │ │ abstraction  │
+   │ Txns       │ │ webhooks │ │              │
+   │ Budgets    │ │ + poll   │ │ Categorize   │
+   │ Debts      │ │ fallback │ │ Advise       │
+   │ Goals      │ │          │ │ Suggest      │
    └─────┬──────┘ └────┬─────┘ └──────┬───────┘
          │              │              │
          └──────────────┼──────────────┘
                         ▼
-              ┌──────────────────┐
-              │    PostgreSQL    │
-              │                  │
-              │ + Redis (cache   │
-              │   & job queue)   │
+              ┌──────────────────┐      ┌──────────────────┐
+              │    PostgreSQL    │      │   Claude API     │
+              │                  │      │   (via AIProvider │
+              │ + pgboss         │      │    abstraction)   │
+              │   (job queue)    │      └──────────────────┘
               └──────────────────┘
                         │
                         ▼
               ┌──────────────────┐
-              │  Bank Aggregator │
-              │  API             │
-              │  (Pluggy/Belvo)  │
+              │      Pluggy      │
+              │   (Bank Data)    │
               └──────────────────┘
 ```
 
@@ -139,7 +139,6 @@
 | **Installments** | Yes — `creditCardMetadata` with installment number, total, amount, card limits, due dates | Yes — credit card bill data with balance breakdowns | In scope, but you build everything |
 | **Pix** | Yes — transaction metadata with sender/recipient info. Supports Pix payment initiation | Yes — regulated ITP, single/scheduled/recurring Pix | In scope, but you build everything |
 | **Investments** | Yes — direct broker connectors (XP, BTG, Clear, Rico, Genial, B3/CEI) | Only what Open Finance exposes (no direct broker connectors) | In scope, but you build everything |
-| **Crypto** | No dedicated connectors | No | No |
 | **Pricing** | 14-day free trial, then paid (contact sales). Sandbox on all plans | Free sandbox + 25 real links trial. Paid plans require sales meeting | APIs free, but **R$1M minimum capital** + security audits + certifications |
 | **SDKs** | Python + Node.js | Node.js + Ruby (Python SDK deprecated) | None |
 | **DX** | Self-serve, good docs, Postman collection, YC-backed | Sales-gated production access, good docs | Regulatory specs, 33 GitHub repos, no tutorial-grade docs |

@@ -152,8 +152,7 @@ User opens the app and immediately sees: "Am I on track?" Budget progress, alert
 ### 4C: Notification System
 - [ ] In-app notification center
 - [ ] Push notifications (PWA)
-- [ ] Email digest (weekly summary, monthly report)
-- [ ] User preferences: which alerts, which channels, quiet hours
+- [ ] User preferences: which alerts, quiet hours, frequency control
 
 ### Deliverable
 The app actively watches your finances and tells you when something needs attention. You don't have to remember to check — it comes to you.

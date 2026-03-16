@@ -16,7 +16,7 @@
      │                                                ▼
      │              ┌──────────────┐         ┌────────────────┐
      │──1:N────────│ Budget       │         │ Transaction    │
-     │              └──────────────┘         └───────┬────────┘
+     │              └──────┬───────┘         └───────┬────────┘
      │                     │                         │
      │                     │ N:1                N:1   │
      │                     ▼                         ▼
@@ -25,7 +25,7 @@
      │              └──────────────┘         └────────────────┘
      │
      │              ┌──────────────┐
-     │──1:N────────│ Debt         │
+     │──1:N────────│ Debt         │──1:N──── DebtPayment
      │              └──────────────┘
      │
      │              ┌──────────────┐         ┌────────────────┐
@@ -39,7 +39,23 @@
      │              └──────────────┘
      │
      │              ┌──────────────┐
-     └──1:N────────│ Goal         │
+     │──1:N────────│ Goal         │
+     │              └──────────────┘
+     │
+     │              ┌──────────────┐
+     │──1:N────────│ Financial    │──1:N──── PlanSnapshot
+     │              │ Plan         │
+     │              └──────┬───────┘
+     │                     │ 1:N (plan has budgets)
+     │                     ▼
+     │                   Budget
+     │
+     │              ┌──────────────┐
+     │──1:N────────│ Notification │
+     │              └──────────────┘
+     │
+     │              ┌──────────────┐
+     └──1:N────────│ AIInsight    │
                     └──────────────┘
 ```
 
@@ -323,7 +339,7 @@ assets
 ├── id                  UUID        PK
 ├── ticker              TEXT        -- 'PETR4', 'ITUB3', 'BTC', 'TESOURO-SELIC-2029'
 ├── name                TEXT        NOT NULL
-├── type                TEXT        NOT NULL  -- 'stock', 'fii', 'etf', 'fixed_income', 'crypto', 'treasury', 'other'
+├── type                TEXT        NOT NULL  -- 'stock', 'fii', 'etf', 'fixed_income', 'treasury', 'other'
 ├── currency            TEXT        DEFAULT 'BRL'
 ├── current_price       BIGINT      -- in centavos
 ├── price_updated_at    TIMESTAMP
@@ -339,6 +355,7 @@ INDEX: (ticker), (type)
 budgets
 ├── id                  UUID        PK
 ├── user_id             UUID        FK → users
+├── plan_id             UUID        FK → financial_plans (nullable — for standalone budgets)
 ├── category_id         UUID        FK → categories
 ├── amount              BIGINT      NOT NULL  -- monthly budget in centavos
 ├── period              TEXT        DEFAULT 'monthly'  -- 'weekly', 'monthly', 'yearly'
@@ -368,6 +385,101 @@ goals
 └── updated_at          TIMESTAMP   NOT NULL
 
 INDEX: (user_id, status)
+```
+
+### FinancialPlan
+
+Represents the user's active financial plan. Ties together budgets, goals, and debt strategy into a single coherent plan.
+
+```sql
+financial_plans
+├── id                  UUID        PK
+├── user_id             UUID        FK → users
+├── name                TEXT        DEFAULT 'My Plan'
+├── status              TEXT        DEFAULT 'active'  -- 'draft', 'active', 'archived'
+├── monthly_income      BIGINT      -- expected monthly income in centavos
+├── total_budget        BIGINT      -- total monthly budget across all categories
+├── debt_strategy       TEXT        -- 'avalanche', 'snowball', 'custom'
+├── notes               TEXT        -- user notes about the plan
+├── created_at          TIMESTAMP   NOT NULL
+├── activated_at        TIMESTAMP   -- when the plan went from draft to active
+└── updated_at          TIMESTAMP   NOT NULL
+
+INDEX: (user_id, status)
+CONSTRAINT: only one 'active' plan per user
+```
+
+### PlanSnapshot
+
+Periodic snapshots of plan health for tracking progress over time.
+
+```sql
+plan_snapshots
+├── id                  UUID        PK
+├── plan_id             UUID        FK → financial_plans
+├── user_id             UUID        FK → users
+├── period              TEXT        NOT NULL  -- '2026-03' (year-month)
+├── health_score        INT         -- 0-100 (percentage on track)
+├── total_income        BIGINT      -- actual income that period
+├── total_expenses      BIGINT      -- actual expenses that period
+├── total_debt_paid     BIGINT      -- debt payments that period
+├── total_saved         BIGINT      -- money saved/invested that period
+├── categories_on_track INT         -- count of categories within budget
+├── categories_over     INT         -- count of categories over budget
+├── details             JSONB       -- per-category breakdown { category_id: { budgeted, actual, status } }
+├── created_at          TIMESTAMP   NOT NULL
+└── updated_at          TIMESTAMP   NOT NULL
+
+INDEX: (user_id, period), (plan_id, period)
+```
+
+### Notification
+
+Push notifications and in-app alerts.
+
+```sql
+notifications
+├── id                  UUID        PK
+├── user_id             UUID        FK → users
+├── type                TEXT        NOT NULL  -- 'overspending', 'bill_due', 'anomaly', 'low_balance', 'debt_advice', 'plan_suggestion', 'connection_issue', 'goal_progress', 'summary'
+├── severity            TEXT        NOT NULL  -- 'critical', 'advisory', 'informational'
+├── title               TEXT        NOT NULL
+├── body                TEXT        NOT NULL
+├── action_url          TEXT        -- deep link in the app (e.g., '/debts/123')
+├── related_entity_type TEXT        -- 'transaction', 'debt', 'budget', 'account', 'goal'
+├── related_entity_id   UUID        -- FK to the related entity
+├── is_read             BOOLEAN     DEFAULT false
+├── is_dismissed        BOOLEAN     DEFAULT false
+├── push_sent           BOOLEAN     DEFAULT false  -- whether push notification was delivered
+├── push_sent_at        TIMESTAMP
+├── created_at          TIMESTAMP   NOT NULL
+└── updated_at          TIMESTAMP   NOT NULL
+
+INDEX: (user_id, is_read, created_at DESC), (user_id, type)
+```
+
+### AIInsight
+
+Stores AI-generated advice and suggestions so users can review, accept, or dismiss them.
+
+```sql
+ai_insights
+├── id                  UUID        PK
+├── user_id             UUID        FK → users
+├── type                TEXT        NOT NULL  -- 'plan_adjustment', 'debt_strategy', 'spending_alert', 'savings_opportunity', 'budget_suggestion'
+├── title               TEXT        NOT NULL
+├── body                TEXT        NOT NULL  -- detailed explanation
+├── suggested_action    JSONB       -- structured action: { type: 'adjust_budget', category_id: '...', new_amount: 150000 }
+├── status              TEXT        DEFAULT 'pending'  -- 'pending', 'accepted', 'dismissed', 'expired'
+├── confidence          DECIMAL     -- AI confidence score (0-1)
+├── context             JSONB       -- data snapshot that generated this insight
+├── accepted_at         TIMESTAMP
+├── dismissed_at        TIMESTAMP
+├── expires_at          TIMESTAMP   -- auto-expire old suggestions
+├── created_at          TIMESTAMP   NOT NULL
+└── updated_at          TIMESTAMP   NOT NULL
+
+INDEX: (user_id, status, created_at DESC), (user_id, type)
 ```
 
 ### CategorizationRule
@@ -430,11 +542,16 @@ ORDER BY month;
 3. For each transaction:
    a. Check if external_id already exists → skip if duplicate
    b. Clean/normalize description
-   c. Run categorization rules (user rules first, then global)
+   c. Categorize (waterfall):
+      i.   User-defined rules (highest priority)
+      ii.  Global/system rules (keyword matching)
+      iii. AI categorization via provider abstraction (Claude API) for unmatched
+      iv.  Default: "Outros"
    d. Detect if it's an installment (parse "PARCELA 3/12" from description)
    e. Detect if it's Pix (parse recipient info)
    f. Insert into transactions table
 4. Update account balance
 5. Recalculate budget usage for affected categories
-6. Send notifications if thresholds are crossed
+6. Check plan health: generate alerts/notifications if thresholds are crossed
+7. Queue AI insight generation if patterns detected (overspending, anomalies, etc.)
 ```

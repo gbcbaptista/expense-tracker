@@ -7,6 +7,8 @@
 - **P2** — Nice to have. Adds significant value but can wait.
 - **P3** — Future. Cool ideas for later phases.
 
+> **Note on P0 vs. Roadmap phases**: P0 means "essential for the product to make sense" — but some P0 features (like Financial Plan) require data from earlier phases before they can work. See ROADMAP.md for the build order and dependencies.
+
 ## Core Philosophy
 
 > **This is NOT a tracker with some AI on top. It's a financial health copilot that happens to track your money.**
@@ -217,7 +219,7 @@ This is what the user sees when they open the app:
 
 ### 8.1 Portfolio Overview
 - Consolidated view across all connected brokerages
-- Asset allocation breakdown by type (Renda Fixa, Ações, FIIs, Crypto, etc.)
+- Asset allocation breakdown by type (Renda Fixa, Ações, FIIs, etc.)
 - Total portfolio value with daily updates
 
 ### 8.2 Asset Details (Meio-termo — not super detailed)
