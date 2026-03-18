@@ -21,3 +21,16 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# tars working folders
+tasks/dev/
+tasks/review/
+tasks/qa/
+tasks/done/
+tasks/failed/
+logs/
+TASK-TEMPLATE.md
+ONBOARDING.md
+
+# Keep queue folder trackable
+!tasks/queue/.gitkeep
